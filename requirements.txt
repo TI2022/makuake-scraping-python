@@ -3,4 +3,3 @@ gunicorn==19.8.1
 Flask-HTTPAuth==3.2.3
 scikit-learn==0.18.1
 pandas==0.19.2
-pip freeze > requirements.txt
