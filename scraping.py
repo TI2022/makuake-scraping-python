@@ -75,19 +75,19 @@ for i in range(1, 3):
             d_list.append(d)
 
 # d_listの２番目まで中身を確認する
-d_list[:2]
+# d_list[:2]
 
 # 変数d_listを使って、データフレームを作成する
-df = pd.DataFrame(d_list)
+# df = pd.DataFrame(d_list)
 
 # データフレームの先頭５行を確認する
-df.head()
+# df.head()
 
 # dfの大きさを確認する
-df.shape
+# df.shape
 
 # 物件名の重複を削除して、その大きさを確認する
-len(df.title.unique())
+# len(df.title.unique())
 
 # to_csv()を使って、データフレームをCSV出力する
 # df.to_csv('test.csv', index=None, encoding='utf-8-sig')
