@@ -1,1 +1,1 @@
-echo web: python main.py > Procfile
+web: gunicorn mysite.wsgi --log-file -
