@@ -2,26 +2,11 @@ import joblib
 from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn import datasets
-from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
-auth = HTTPBasicAuth()
-
-users = {
-    "john": "hello",
-    "susan": "bye"
-}
-
-
-@auth.get_password
-def get_pw(username):
-    if username in users:
-        return users.get(username)
-    return None
 
 
 @app.route('/predict/<string:clf_file>', methods=['POST'])
-@auth.login_required
 def predict(clf_file):
     clf = joblib.load("{}.pkl".format(clf_file))
     data = request.json
