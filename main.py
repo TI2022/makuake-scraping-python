@@ -6,15 +6,9 @@ from sklearn import datasets
 app = Flask(__name__)
 
 
-@app.route('/predict/<string:clf_file>', methods=['POST'])
-def predict(clf_file):
-    clf = joblib.load("{}.pkl".format(clf_file))
-    data = request.json
-    query = pd.DataFrame(data)
-    cols = joblib.load("{}_cols.pkl".format(clf_file))
-    query = query[cols]
-    prediction = clf.predict(query)
-    return jsonify({'prediction': prediction.tolist()})
+@app.route("/", methods = ['GET'])
+def test():
+    return jsonify({'message' : "Hello!"})
 
 
 if __name__ == '__main__':
