@@ -18,6 +18,7 @@ from flask import Flask, jsonify
 # from sklearn import datasets
 
 app = Flask(__name__)
+# 文字化け対策
 app.config['JSON_AS_ASCII'] = False
 
 
@@ -29,7 +30,13 @@ def test():
 @app.route("/scraping", methods=['GET'])
 def scraping():
     # 変数urlに（取得したい）ホームページのURLを格納する
-    url = 'https://suumo.jp/chintai/tokyo/sc_shinjuku/?page={}'
+    base_url = 'https://coconala.com/'
+    IT_categories_url = base_url + 'categories/11?ref_c=1'
+    IT_programing_categories_url = base_url + 'categories/231?ref=category_popular_subcategories'
+    IT_scraping_categories_url = base_url + 'categories/230?ref_c=1&sort_by=fav'
+
+    /categories/11?ref_c=1&sort_by=fav&business_flag=false&page=2
+    
     # 変数d_listに空のリストを作成する
     d_list = []
 
@@ -37,7 +44,7 @@ def scraping():
     # for i in range(1,3)とする事で、2ページまでループが回る
     for i in range(1, 3):
         print('d_listの大きさ：', len(d_list))
-        target_url = url.format(i)
+        target_url = IT_programing_categories_url.format(i)
 
         # print()してtarget_urlを確認する
         print(target_url)
