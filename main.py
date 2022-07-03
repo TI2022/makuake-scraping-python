@@ -35,8 +35,6 @@ def scraping():
     IT_programing_categories_url = base_url + 'categories/231?ref=category_popular_subcategories'
     IT_scraping_categories_url = base_url + 'categories/230?ref_c=1&sort_by=fav'
 
-    /categories/11?ref_c=1&sort_by=fav&business_flag=false&page=2
-    
     # 変数d_listに空のリストを作成する
     d_list = []
 
