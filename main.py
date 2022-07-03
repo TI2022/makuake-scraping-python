@@ -1,4 +1,5 @@
-# coding:utf-8
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 
 # スクレイピング先のサーバに負荷をかけないように処理を一時的に止められるsleepをインポート
 from time import sleep
@@ -17,6 +18,7 @@ from flask import Flask, jsonify
 # from sklearn import datasets
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 
 @app.route("/", methods=['GET'])
@@ -88,7 +90,7 @@ def scraping():
                     'madori': madori.text,
                     'menseki': menseki.text
                 }
-
+                print(d_list)
                 d_list.append(d)
     return jsonify(d_list)
 
