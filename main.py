@@ -1,14 +1,14 @@
-import joblib
-from flask import Flask, jsonify, request
-import pandas as pd
-from sklearn import datasets
+# import joblib
+from flask import Flask, jsonify
+# import pandas as pd
+# from sklearn import datasets
 
 app = Flask(__name__)
 
 
-@app.route("/", methods = ['GET'])
+@app.route("/", methods=['GET'])
 def test():
-    return jsonify({'message' : "Hello!"})
+    return jsonify({'message': "Hello!"})
 
 
 if __name__ == '__main__':
