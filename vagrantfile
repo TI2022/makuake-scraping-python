@@ -29,7 +29,6 @@ Vagrant.configure("2") do |config|
 
     # pip install 
     pip install --upgrade pip
-    pip install flask-httpauth
     pip install gunicorn
   SHELL
 end
