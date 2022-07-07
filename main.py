@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from pkgutil import extend_path
 from time import sleep
 
 from bs4 import BeautifulSoup
 import requests
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
