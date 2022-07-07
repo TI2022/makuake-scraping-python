@@ -13,8 +13,6 @@ from selenium.webdriver.common.by import By
 import csv
 import datetime
 
-from tables import Description
-
 app = Flask(__name__)
 # 文字化け対策
 app.config['JSON_AS_ASCII'] = False
@@ -135,7 +133,7 @@ def amazon_scraping():
                     except:
                         description = '[No Description]'
                     if not (price == '[No Price]' and image == '[No Image]'
-                            and Description == '[No Description]') and \
+                            and description == '[No Description]') and \
                         not (price == previousPrice
                              and image == previousImage and description == previousDescription):
                         writer.writerow([no, price, image, description])
