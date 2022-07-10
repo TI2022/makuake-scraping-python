@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 from time import sleep
-import pdb
 
 from bs4 import BeautifulSoup
 import requests
