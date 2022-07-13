@@ -253,7 +253,6 @@ def makuake_scraping():
             df = pd.DataFrame(res_dict_list)
             df["Url"] = df["Url"].map(lambda s: '<a href="{}" target="_blank">{}</a>'.format(s,s))
             df["Image"] = df["Image"].map(lambda s: "<img src='{}' width='200' />".format(s))
-            df_reset = df.set_index('AchievementRate')
             driver.quit()
             return """
                 <!doctype html>
@@ -279,7 +278,7 @@ def makuake_scraping():
                     </div>
                 </body>
                 </html>
-                """.format(url_for('index'), df_reset.to_html(classes=["table", "table-bordered", "table-hover"], escape=False))
+                """.format(url_for('index'), df.to_html(classes=["table", "table-bordered", "table-hover"], escape=False))
         except:
             return """
                 エラーが発生しました。マクアケを再度検索する。
