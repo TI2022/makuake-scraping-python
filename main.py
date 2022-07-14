@@ -136,7 +136,7 @@ def makuake_scraping():
             # options.binary_location = 'C:\Program Files\Google\Chrome\Application\chromedriver'
             sleep(1)
             # driver = webdriver.Chrome(ChromeDriverManager().install())
-            driver_path = '/app/.chromedriver/bin/chromedriver'
+            driver_path = './chromedriver'
             options = webdriver.ChromeOptions()
             options.add_argument('--headless')
             #※headlessにしている
