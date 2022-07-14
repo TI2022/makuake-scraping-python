@@ -128,12 +128,12 @@ def makuake_scraping():
         </html>
         """.format(url_for('index'))
     else:
-        try:
+        # try:
             search_text = request.form["word"]
             # マクアケのURL
             root_uri = 'https://www.makuake.com/'
-            options = Options()
-            options.binary_location = 'C:\Program Files\Google\Chrome\Application\chromedriver'
+            # options = Options()
+            # options.binary_location = 'C:\Program Files\Google\Chrome\Application\chromedriver'
             sleep(1)
             # driver = webdriver.Chrome(ChromeDriverManager().install())
             driver = webdriver.Chrome("./chromedriver")
@@ -267,31 +267,31 @@ def makuake_scraping():
                 </body>
                 </html>
                 """.format(url_for('index'), df.to_html(classes=["table", "table-bordered", "table-hover"], escape=False, justify="match-parent", header="true", table_id="table"))
-        except:
-            return """
-                <!doctype html>
-                <html lang="ja">
-                <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-                </head>
-                <body>
-                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-                    <div class="container">
-                        <h2 class="mt-3">マクアケスクレイピング</h2>
-                        <p>エラーが発生しました。マクアケを再度検索する。</p>
-                        <form action="/scraping/makuake" method="POST">
-                            <input name="word"></input>
-                            <input type="submit" value="submit"/>
-                        </form>
-                        <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
-                        {}
-                    </div>
-                </body>
-                </html>""".format(url_for('index'))
+        # except:
+        #     return """
+        #         <!doctype html>
+        #         <html lang="ja">
+        #         <head>
+        #             <meta charset="utf-8">
+        #             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        #             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        #         </head>
+        #         <body>
+        #             <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        #             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        #             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        #             <div class="container">
+        #                 <h2 class="mt-3">マクアケスクレイピング</h2>
+        #                 <p>エラーが発生しました。マクアケを再度検索する。</p>
+        #                 <form action="/scraping/makuake" method="POST">
+        #                     <input name="word"></input>
+        #                     <input type="submit" value="submit"/>
+        #                 </form>
+        #                 <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
+        #                 {}
+        #             </div>
+        #         </body>
+        #         </html>""".format(url_for('index'))
 
 
 if __name__ == '__main__':
