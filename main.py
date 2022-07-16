@@ -12,7 +12,6 @@ import csv
 import datetime
 import numpy as np
 import pandas as pd
-from selenium.webdriver.chrome.options import Options
 
 # import matplotlib as mpl
 # import matplotlib.pyplot as pyp
@@ -29,19 +28,19 @@ def index():
 @app.route("/scraping/crowdworks", methods=['GET'])
 def crowdworks_scraping():
     try:
-        # uri = 'https://crowdworks.jp/public/jobs?category=jobs&order=score'
+        uri = 'https://crowdworks.jp/public/jobs?category=jobs&order=score'
         d_list = []
-        # r = requests.get(uri)
-        # soup = BeautifulSoup(r.text, 'html.parser')
-        # contents = soup.find_all('div', class_="job_item")
-        # for content in contents:
-        #     title = content.find('h3', class_='item_title').text.replace('\n', '')
-        #     price = content.find('b', class_='amount').text.replace('\n', '')
-        #     d = {'title': title,
-        #         'price': price}
-        #     d_list.append(d)
-        #     print(d)
-        #     sleep(1)
+        r = requests.get(uri)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        contents = soup.find_all('div', class_="job_item")
+        for content in contents:
+            title = content.find('h3', class_='item_title').text.replace('\n', '')
+            price = content.find('b', class_='amount').text.replace('\n', '')
+            d = {'title': title,
+                'price': price}
+            d_list.append(d)
+            print(d)
+            sleep(1)
         return """
             <h2>完了</h2>
             <a href="{}">to top</a>
@@ -70,7 +69,7 @@ def csv_upload():
             upload_file = request.files['uploadFile']
             df = pd.read_csv(upload_file, encoding="UTF-8")
             df = pd.DataFrame(df)
-            df["詳細URL"] = df["詳細URL"].map(lambda s: '<a href="{}" target="_blank">{}</a>'.format(s,s))
+            df["詳細URL"] = df["詳細URL"].map(lambda s: '<a href="{}" target="_blank">詳細ページ</a>'.format(s))
             df["画像"] = df["画像"].map(lambda s: "<img src='{}' width='200' />".format(s))
             df_reset = df.set_index('No')
 
@@ -92,6 +91,125 @@ def csv_upload():
                 </form>
                 <a href="{}">to top</a>""".format(url_for('index'))
 
+@app.route("/scraping/campfire_ranking", methods=["GET", "POST"])
+def campfire_ranking():
+    if request.method == "GET":
+        return """
+        <!doctype html>
+        <html lang="ja">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        </head>
+        <body>
+            <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+            <div class="container">
+                <h2 class="mt-3">campfire今日のランキング取得</h2>
+                <form action="/scraping/campfire_ranking" method="POST">
+                    <div class="mt-3">
+                        <p>今日のランキングを取得する</p>
+                    </div>
+                    <div class="mt-3">
+                        <input class="px-3 py-2" type="submit" value="submit"/>
+                    </div>
+                </form>
+                <div class="mt-3 text-right">
+                    <a class="btn btn-info btn-lg mt-3" href="{}">to top</a>
+                </div>
+            </div>
+        </body>
+        </html>
+        """.format(url_for('index'))
+    else:
+        try:
+            root_uri = 'https://camp-fire.jp/'
+            r = requests.get(root_uri)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            fresh_wrap = soup.find('section', class_="fresh")
+            freshes = fresh_wrap.find_all('div', class_="box")
+            # AchievementRate, Price, Rest, Description, Url, Image = [], [], [], [], [], []
+            res_list = []
+
+            sleep(1)
+            for fresh in freshes:
+                achievementRates = fresh.select("div.meter-in div span")
+                prices = fresh.select("div.total")
+                rests = fresh.select("div.rest")
+                descriptions = fresh.select("div.box-title a h4")
+                urls = fresh.select("div.box-title a")
+                images = fresh.select("img.lazyload")
+
+                achievementRate = achievementRates[0].string
+                price = prices[0].getText().replace('\n', '')
+                rest = rests[0].getText().replace('\n', '')
+                description = descriptions[0].string
+                get_url = urls[0].attrs['href']
+                url = root_uri + get_url
+                image = images[0].attrs['data-src']
+
+                dict = {"AchievementRate": achievementRate,
+                        "Price": price,
+                        "Rest": rest,
+                        "Description": description,
+                        "Url": url,
+                        "Image": image
+                        }
+                res_list.append(dict)
+                sleep(2)
+            print(res_list)
+            df = pd.DataFrame(res_list)
+            df["Url"] = df["Url"].map(lambda s: '<a href="{}" target="_blank">詳細ページ</a>'.format(s))
+            df["Image"] = df["Image"].map(lambda s: "<img src='{}' width='200' />".format(s))
+            return """
+                <!doctype html>
+                <html lang="ja">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+                </head>
+                <body>
+                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                    <div class="container">
+                        <h2 class="mt-3">campfire</h2>
+                        スプレイピングが完了しました！
+                        <form action="/scraping/campfire_ranking" method="POST">
+                            <input type="submit" value="submit"/>
+                        </form>
+                        <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
+                        {}
+                    </div>
+                </body>
+                </html>
+                """.format(url_for('index'), df.to_html(classes=["table", "table-bordered", "table-hover"], escape=False, justify="match-parent", header="true", table_id="table"))
+        except:
+            return """
+                <!doctype html>
+                <html lang="ja">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+                </head>
+                <body>
+                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                    <div class="container">
+                        <h2 class="mt-3">campfire</h2>
+                        <p>エラーが発生しました。</p>
+                        <form action="/scraping/campfire_ranking" method="POST">
+                            <input type="submit" value="submit"/>
+                        </form>
+                        <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
+                    </div>
+                </body>
+                </html>""".format(url_for('index'))
 
 @app.route("/scraping/makuake", methods=["GET", "POST"])
 def makuake_scraping():
@@ -128,19 +246,11 @@ def makuake_scraping():
         </html>
         """.format(url_for('index'))
     else:
-        # try:
+        try:
             search_text = request.form["word"]
-            # マクアケのURL
             root_uri = 'https://www.makuake.com/'
-            # options = Options()
-            # options.binary_location = 'C:\Program Files\Google\Chrome\Application\chromedriver'
             sleep(1)
-            # driver = webdriver.Chrome(ChromeDriverManager().install())
-            driver_path = './chromedriver'
-            options = webdriver.ChromeOptions()
-            options.add_argument('--headless')
-            #※headlessにしている
-            driver = webdriver.Chrome(options=options, executable_path=driver_path)
+            driver = webdriver.Chrome(ChromeDriverManager().install())
             driver.implicitly_wait(30)
             driver.get(root_uri)
             sleep(1)
@@ -243,7 +353,7 @@ def makuake_scraping():
             print("10")
             sleep(5)
             df = pd.DataFrame(res_dict_list)
-            df["Url"] = df["Url"].map(lambda s: '<a href="{}" target="_blank">{}</a>'.format(s,s))
+            df["Url"] = df["Url"].map(lambda s: '<a href="{}" target="_blank">詳細ページ</a>'.format(s))
             df["Image"] = df["Image"].map(lambda s: "<img src='{}' width='200' />".format(s))
             driver.quit()
             return """
@@ -271,31 +381,31 @@ def makuake_scraping():
                 </body>
                 </html>
                 """.format(url_for('index'), df.to_html(classes=["table", "table-bordered", "table-hover"], escape=False, justify="match-parent", header="true", table_id="table"))
-        # except:
-        #     return """
-        #         <!doctype html>
-        #         <html lang="ja">
-        #         <head>
-        #             <meta charset="utf-8">
-        #             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        #             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-        #         </head>
-        #         <body>
-        #             <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        #             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-        #             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        #             <div class="container">
-        #                 <h2 class="mt-3">マクアケスクレイピング</h2>
-        #                 <p>エラーが発生しました。マクアケを再度検索する。</p>
-        #                 <form action="/scraping/makuake" method="POST">
-        #                     <input name="word"></input>
-        #                     <input type="submit" value="submit"/>
-        #                 </form>
-        #                 <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
-        #                 {}
-        #             </div>
-        #         </body>
-        #         </html>""".format(url_for('index'))
+        except:
+            return """
+                <!doctype html>
+                <html lang="ja">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+                </head>
+                <body>
+                    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+                    <div class="container">
+                        <h2 class="mt-3">マクアケスクレイピング</h2>
+                        <p>エラーが発生しました。マクアケを再度検索する。</p>
+                        <form action="/scraping/makuake" method="POST">
+                            <input name="word"></input>
+                            <input type="submit" value="submit"/>
+                        </form>
+                        <a class="btn btn-info btn-lg my-3" href="{}">to top</a>
+                        {}
+                    </div>
+                </body>
+                </html>""".format(url_for('index'))
 
 
 if __name__ == '__main__':
