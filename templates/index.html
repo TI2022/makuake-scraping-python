@@ -11,12 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <div class="container">
-        <h4 class="my-3" >CSV入出力ページ</h4>
-        <a class="btn btn-info btn-lg" href="{{ url_for('csv_upload') }}">go to CSV</a>
-        <h4 class="my-3" >マクアケスクレイピングページ</h4>
-        <a class="btn btn-info btn-lg" href="{{ url_for('makuake_scraping') }}">go to makuake</a>
-        <h4 class="my-3" >campfireスランキング</h4>
-        <a class="btn btn-info btn-lg" href="{{ url_for('campfire_ranking') }}">go to campfire_ranking</a>
+        <div class="text-center">
+            <h5 class="mt-5 mb-3">キャンプファイヤー</h5>
+            <a class="btn btn-info btn-lg" href="{{ url_for('campfire') }}">キャンプファイヤースクレイプ画面へ</a>
+            <h5 class="mt-5 mb-3">CSV取り込みページ</h5>
+            <a class="btn btn-info btn-lg" href="{{ url_for('csv_campfire') }}">CSV取り込みページへ</a>
+        </div>
     </div>
 </body>
 </html>
